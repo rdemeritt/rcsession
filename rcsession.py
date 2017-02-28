@@ -1,10 +1,10 @@
 """
 Created by Ron DeMeritt <rdemeritt@gmail.com>
 """
-__version__ = '0.1.1'
-
 import requests
 import json
+
+__version__ = '0.1.1'
 
 
 def setupSession(_token):
