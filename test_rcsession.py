@@ -15,17 +15,19 @@ def main():
     # figure out how we should get our token
     # and configure our https session
     if args.token:
-        session = rcsession.setup_session(args.token)
+        session = rcsession.RCSession(args.token)
     else:
-        session = rcsession.setup_session(rcsession.get_token_from_file(token_file))
+        session = rcsession.RCSession(RCSession.get_token_from_file('token.json'))
+        # session = rcsession.RCSession(rcsession.get_token_from_file(token_file))
 
     if not session:
         exit(1)
 
-    print(rcsession.get_token(session))
-    rcsession.renew_token(session, "2017-09-30")
-    print(rcsession.get_token(session))
-
+    print(session.get_token())
+    print(session.username)
+    print(session.renew_token())
+    print(session.get_token())
+    print(session.username)
     exit(0)
 
 
