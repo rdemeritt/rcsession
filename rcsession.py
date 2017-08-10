@@ -10,7 +10,6 @@ __version__ = '0.2.0'
 class RCSession:
 
     token_url = 'https://redcloak.secureworks.com/token'
-    username = ''
 
     def __init__(self, _token):
         self.headers = {
@@ -36,9 +35,6 @@ class RCSession:
 
         if response.status_code != 200:
             print("ERROR: Got %s, but expected 200" % response.status_code)
-            print(
-                'Your token has expired.  '
-                'Get a new token at %s' % self.token_url)
             return False
 
         RCSession.__init__(self, json.loads(response.text)['serialized'])
