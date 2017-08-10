@@ -3,7 +3,7 @@ Created by Ron DeMeritt <rdemeritt@gmail.com>
 """
 import requests
 import json
-import datetime
+from _datetime import datetime
 
 __version__ = '0.2.0'
 
@@ -55,4 +55,13 @@ class RCSession:
     # return true if token is expired.  if it is not expired
     # it will return the expiration date
     def is_token_expired(self):
-        pass
+        if self.get_token() and \
+                self.create_dto(self.get_token()['token']['expires'])\
+                > datetime.utcnow():
+            return self.create_dto(self.get_token()['token']['expires'])
+        return True
+
+    # return a datetime object from a string
+    @classmethod
+    def create_dto(cls, _dto_string):
+        return datetime.strptime(_dto_string, '%Y-%m-%dT%H:%M:%S.%f')
