@@ -3,6 +3,7 @@ Created by Ron DeMeritt <rdemeritt@gmail.com>
 """
 import requests
 import json
+import datetime
 
 __version__ = '0.2.0'
 
@@ -50,3 +51,8 @@ class RCSession:
     def get_token_from_file(self, _file_name):
         with open(_file_name) as token_json:
             return json.load(token_json)['token']
+
+    # return true if token is expired.  if it is not expired
+    # it will return the expiration date
+    def is_token_expired(self):
+        pass

@@ -1,5 +1,6 @@
 import argparse
 import rcsession
+import datetime
 
 
 def buildArgParser():
@@ -28,6 +29,9 @@ def main():
     print(session.renew_token())
     print(session.get_token())
     print(session.username)
+    print(datetime.datetime.utcnow())
+    print(session.is_token_expired())
+
     exit(0)
 
 
