@@ -1,72 +1,84 @@
 """
 Created by Ron DeMeritt <rdemeritt@gmail.com>
+
+built on top of:
+    python 3.5
+    python-requests/2.9.1
 """
 import requests
 import json
+from datetime import datetime
 
-__version__ = '0.1.1'
+__version__ = '0.2.1'
 
 
-def setup_session(_token):
-    headers = {
-        'authorization': 'TOKEN %s' % _token,
-        'content-type': 'application/json',
-        'accept': 'application/json'
-    }
+class RCSession:
 
-    session = requests.Session()
-    session.headers.update(headers)
+    token_url = 'https://redcloak.secureworks.com/token'
 
-    # ensure our token is still valid
-    token = get_token(session)
+    def __init__(self, _token, _auto_renew=False):
+        self.headers = {
+            'authorization': 'TOKEN %s' % _token,
+            'content-type': 'application/json',
+            'accept': 'application/json'
+        }
+        self.auto_renew = _auto_renew
 
-    if not token:
-        print('Token Expired...  Trying to renew')
+        try:
+            self.session = requests.Session()
+        except Exception as e:
+            print("ERROR: Unable to build requests session: %s" % e)
+            exit(1)
 
-        # attempt to get a new token
-        new_token = renew_token(session)
+        self.session.headers.update(self.headers)
+        self.user_friendly_name = self.get_token()["token"]["user_friendly_name"]
 
-        if not new_token:
+    def close_requests(self):
+        try:
+            self.session.close()
+        except Exception as e:
+            print(e)
+
+    def get_token(self):
+        response = self.session.get(self.token_url)
+
+        if response.status_code == 404:
             return False
 
-        # update our session headers with our new token
-        session.headers.update(
-            {'authorization': 'TOKEN %s' % new_token})
-    global user_name
-    # user_name = json.loads(
-    #     session.get(token_url).text)["token"]["user_friendly_name"]
-    # print(json.loads(session.get(token_url).text))
-    user_name = get_token(session)["token"]["user_friendly_name"]
-    return session
+        return json.loads(response.text)
 
+    def renew_token(self):
+        response = self.session.post(self.token_url)
 
-def get_token(_session):
-    response = _session.get(token_url)
+        if response.status_code != 200:
+            print("ERROR: Got %s, but expected 200" % response.status_code)
+            return False
 
-    if response.status_code == 404:
+        # reinitialize our session using our new token
+        RCSession.__init__(self, json.loads(response.text)['serialized'])
+        return True
+
+    # fetch our authentication token from a json document
+    #
+    # example below:
+    # {
+    #     "token": "3JkZW1lcml0dEBnbWFpbC5jb20QkJHtx/...."
+    #  }
+    #
+    def get_token_from_file(self, _file_name):
+        with open(_file_name) as token_json:
+            return json.load(token_json)['token']
+
+    # return datetime object w/ expiration date of token.  if the token has expired
+    # it will return false
+    # NOTE: likely don't need this function...
+    def is_token_valid(self):
+        if self.get_token() and \
+                self.datetimefstr(self.get_token()['token']['expires']) > datetime.utcnow():
+            return self.datetimefstr(self.get_token()['token']['expires'])
         return False
 
-    return json.loads(response.text)
-
-
-# fetch our authentication token from a json file
-def get_token_from_file(_file_name):
-    with open(_file_name) as token_json:
-        return json.load(token_json)['token']
-
-
-def renew_token(_session):
-    response = _session.post(token_url)
-
-    if response.status_code != 200:
-        print("ERROR: Got %s, but expected 200" % response.status_code)
-        print(
-            'Your token has expired.  '
-            'Get a new token at %s' % token_url)
-        return False
-
-    return json.loads(response.text)['serialized']
-
-
-token_url = 'https://redcloak.secureworks.com/token'
-user_name = ''
+    # return a datetime object from a string
+    @classmethod
+    def datetimefstr(cls, _dto_string):
+        return datetime.strptime(_dto_string, '%Y-%m-%dT%H:%M:%S.%f')
