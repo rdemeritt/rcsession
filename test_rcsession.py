@@ -2,12 +2,12 @@ import argparse
 import rcsession
 
 
-def buildArgParser():
+def build_arg_parser():
     parser = argparse.ArgumentParser(
         prog='test_rcsession', description='Test rcsession')
     parser.add_argument(
         '--token', help='User auth token',
-        required=False)
+        required=True)
     return parser.parse_args()
 
 
@@ -46,7 +46,7 @@ def main():
     exit(0)
 
 
-args = buildArgParser()
+args = build_arg_parser()
 
 if __name__ == '__main__':
     main()
