@@ -3,25 +3,37 @@ Created by Ron DeMeritt <rdemeritt@gmail.com>
 """
 import requests
 import json
-from _datetime import datetime
+from datetime import datetime
 
-__version__ = '0.2.0'
+__version__ = '0.2.1'
 
 
 class RCSession:
 
     token_url = 'https://redcloak.secureworks.com/token'
 
-    def __init__(self, _token):
+    def __init__(self, _token, _auto_renew=False):
         self.headers = {
             'authorization': 'TOKEN %s' % _token,
             'content-type': 'application/json',
             'accept': 'application/json'
         }
+        self.auto_renew = _auto_renew
 
-        self.session = requests.Session()
+        try:
+            self.session = requests.Session()
+        except Exception as e:
+            print("ERROR: Unable to build requests session: %s" % e)
+            exit(1)
+
         self.session.headers.update(self.headers)
-        self.username = self.get_token()["token"]["user_friendly_name"]
+        self.user_friendly_name = self.get_token()["token"]["user_friendly_name"]
+
+    def close_requests(self):
+        try:
+            self.session.close()
+        except Exception as e:
+            print(e)
 
     def get_token(self):
         response = self.session.get(self.token_url)
@@ -38,6 +50,7 @@ class RCSession:
             print("ERROR: Got %s, but expected 200" % response.status_code)
             return False
 
+        # reinitialize our session using our new token
         RCSession.__init__(self, json.loads(response.text)['serialized'])
         return True
 
@@ -52,16 +65,16 @@ class RCSession:
         with open(_file_name) as token_json:
             return json.load(token_json)['token']
 
-    # return true if token is expired.  if it is not expired
-    # it will return the expiration date
-    def is_token_expired(self):
+    # return datetime object w/ expiration date of token.  if the token has expired
+    # it will return false
+    # NOTE: likely don't need this function...
+    def is_token_valid(self):
         if self.get_token() and \
-                self.create_dto(self.get_token()['token']['expires'])\
-                > datetime.utcnow():
-            return self.create_dto(self.get_token()['token']['expires'])
-        return True
+                self.datetimefstr(self.get_token()['token']['expires']) > datetime.utcnow():
+            return self.datetimefstr(self.get_token()['token']['expires'])
+        return False
 
     # return a datetime object from a string
     @classmethod
-    def create_dto(cls, _dto_string):
+    def datetimefstr(cls, _dto_string):
         return datetime.strptime(_dto_string, '%Y-%m-%dT%H:%M:%S.%f')
