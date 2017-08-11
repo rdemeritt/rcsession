@@ -1,5 +1,9 @@
 """
 Created by Ron DeMeritt <rdemeritt@gmail.com>
+
+built on top of:
+    python 3.5
+    python-requests/2.9.1
 """
 import requests
 import json
