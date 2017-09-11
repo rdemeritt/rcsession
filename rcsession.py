@@ -9,20 +9,32 @@ import requests
 import json
 from datetime import datetime
 
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 
 
 class RCSession:
 
     token_url = 'https://redcloak.secureworks.com/token'
+    api_key_url = 'https://api.secureworks.com/api/redcloak'
 
-    def __init__(self, _token, _auto_renew=False):
-        self.headers = {
-            'authorization': 'TOKEN %s' % _token,
+    def __init__(self, _token=False, _key=False, _auto_renew=False):
+        # check to see if we should use an API key instead
+        # of Red Cloak token
+        if _key:
+            self.headers = {
+            'authorization': 'APIKEY %s' % _key,
             'content-type': 'application/json',
             'accept': 'application/json'
-        }
-        self.auto_renew = _auto_renew
+            }
+
+        # use the Red Cloak token
+        elif _token:
+            self.headers = {
+                'authorization': 'TOKEN %s' % _token,
+                'content-type': 'application/json',
+                'accept': 'application/json'
+            }
+            self.auto_renew = _auto_renew
 
         try:
             self.session = requests.Session()
@@ -31,7 +43,9 @@ class RCSession:
             exit(1)
 
         self.session.headers.update(self.headers)
-        self.user_friendly_name = self.get_token()["token"]["user_friendly_name"]
+
+        if _token:
+            self.user_friendly_name = self.get_token()["token"]["user_friendly_name"]
 
     def close_requests(self):
         try:

@@ -5,9 +5,9 @@ import rcsession
 def build_arg_parser():
     parser = argparse.ArgumentParser(
         prog='test_rcsession', description='Test rcsession')
-    parser.add_argument(
-        '--token', help='User auth token',
-        required=True)
+    auth_group = parser.add_mutually_exclusive_group(required=True)
+    auth_group.add_argument('--token', help='User auth via Red Cloak Token')
+    auth_group.add_argument('--key', help='User auth via API key')
     return parser.parse_args()
 
 
@@ -15,7 +15,11 @@ def main():
     # figure out how we should get our token
     # and configure our https session
     if args.token:
-        session = rcsession.RCSession(args.token)
+        session = rcsession.RCSession(_token=args.token)
+
+    elif args.key:
+        session = rcsession.RCSession(_key=args.key)
+
     else:
         print("ERROR: No token provided")
         exit(1)
@@ -25,12 +29,13 @@ def main():
     if not session:
         exit(1)
 
-    print(session.get_token())
-    print(session.user_friendly_name)
-    print(session.renew_token())
-    print(session.get_token())
-    print(session.user_friendly_name)
-    print(session.is_token_valid())
+    if args.token:
+        print(session.get_token())
+        print(session.user_friendly_name)
+        print(session.renew_token())
+        print(session.get_token())
+        print(session.user_friendly_name)
+        print(session.is_token_valid())
 
     # print the RCSession info
     print("\n" + str(session.__dict__))
