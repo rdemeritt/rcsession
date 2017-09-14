@@ -14,38 +14,46 @@ __version__ = '0.2.2'
 
 class RCSession:
 
-    token_url = 'https://redcloak.secureworks.com/token'
-    api_key_url = 'https://api.secureworks.com/api/redcloak'
-
-    def __init__(self, _token=False, _key=False, _auto_renew=False):
+    def __init__(self, _token=False, _key=False, _auto_renew=False,
+                 _content_type="json", _accept="json"):
         # check to see if we should use an API key instead
         # of Red Cloak token
         if _key:
             self.headers = {
-            'authorization': 'APIKEY %s' % _key,
-            'content-type': 'application/json',
-            'accept': 'application/json'
+                'authorization': 'APIKEY %s' % _key,
+                'content-type': 'application/%s' % _content_type,
+                'accept': 'application/%s' % _accept
             }
+            self.base_url = "https://api.secureworks.com/api/redcloak/"
 
         # use the Red Cloak token
         elif _token:
             self.headers = {
                 'authorization': 'TOKEN %s' % _token,
-                'content-type': 'application/json',
-                'accept': 'application/json'
+                'content-type': 'application/%s' % _content_type,
+                'accept': 'application/%s' % _accept
             }
+            self.base_url = "https://redcloak.secureworks.com/"
             self.auto_renew = _auto_renew
 
         try:
             self.session = requests.Session()
+            self.session.headers.update(self.headers)
+
         except Exception as e:
             print("ERROR: Unable to build requests session: %s" % e)
             exit(1)
 
-        self.session.headers.update(self.headers)
-
-        if _token:
-            self.user_friendly_name = self.get_token()["token"]["user_friendly_name"]
+        self.token_url = self.base_url + "token"
+        self.hosts_url = self.base_url + "hosts"
+        self.event_resolution_url = self.base_url + "event_resolution"
+        self.hcc_url = self.base_url + "host_color_contributions"
+        self.search_url = self.base_url + "search"
+        self.client_domains_url = self.base_url + "client_domains"
+        self.watchlists_url = self.base_url + "watchlist"
+        self.users_url = self.base_url + "users"
+        self.packages_url = self.base_url + "packages"
+        self.user_friendly_name = self.get_token()["token"]["user_friendly_name"]
 
     def close_requests(self):
         try:
@@ -56,7 +64,7 @@ class RCSession:
     def get_token(self):
         response = self.session.get(self.token_url)
 
-        if response.status_code == 404:
+        if response.status_code != 200:
             return False
 
         return json.loads(response.text)

@@ -1,5 +1,6 @@
 import argparse
 import rcsession
+import json
 
 
 def build_arg_parser():
@@ -9,6 +10,10 @@ def build_arg_parser():
     auth_group.add_argument('--token', help='User auth via Red Cloak Token')
     auth_group.add_argument('--key', help='User auth via API key')
     return parser.parse_args()
+
+
+def dump_url_response(_session, _url):
+        return _session.session.get(_url).text
 
 
 def main():
@@ -29,19 +34,29 @@ def main():
     if not session:
         exit(1)
 
+    if args.key:
+        pass
+
     if args.token:
-        print(session.get_token())
-        print(session.user_friendly_name)
-        print(session.renew_token())
-        print(session.get_token())
-        print(session.user_friendly_name)
-        print(session.is_token_valid())
+        # print(session.user_friendly_name)
+        # print(session.renew_token())
+        # print(session.get_token())
+        # print(session.user_friendly_name)
+        # print(session.is_token_valid())
+        pass
+
+    # dump some pages
+    print("TOKEN:\n" + str(session.get_token()))
+    print("\nFRIENDLY NAME:\n" + str(session.user_friendly_name) + "\n")
+    print("\nCLIENT DOMAINS:\n" + str(dump_url_response(session, session.client_domains_url)))
+    print("\nWATCHLISTS:\n" + str(dump_url_response(session, session.watchlists_url)))
+    print("\nHOSTS:\n" + str(dump_url_response(session, session.hosts_url)))
 
     # print the RCSession info
-    print("\n" + str(session.__dict__))
+    print("\nRCSESSION INFO:\n" + str(session.__dict__))
 
     # print out the requests session info
-    print("\n" + str(session.__dict__['session'].__dict__))
+    print("\nREQUESTS INFO:\n" + str(session.__dict__['session'].__dict__))
 
     # close_requests our https session
     print("Closing %s: " % session.__dict__['session'])
