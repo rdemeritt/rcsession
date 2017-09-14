@@ -1,5 +1,5 @@
 # Overview
-This is a simple script used to display the Red Cloak Domains for JFE.
+This is an attempt to build a usable module to handle red cloak authentication, etc.
 
 # Dependencies
 in order to use this module, you need to have the following:
