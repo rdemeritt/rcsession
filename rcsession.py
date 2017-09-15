@@ -41,7 +41,7 @@ class RCSession:
             self.session.headers.update(self.headers)
 
         except Exception as e:
-            print("ERROR: Unable to build requests session: %s" % e)
+            print("ERROR: Unable to build requests session: %s" % str(e))
             exit(1)
 
         self.token_url = self.base_url + "token"
@@ -50,7 +50,7 @@ class RCSession:
         self.hcc_url = self.base_url + "host_color_contributions"
         self.search_url = self.base_url + "search"
         self.client_domains_url = self.base_url + "client_domains"
-        self.watchlists_url = self.base_url + "watchlist"
+        self.watchlists_url = self.base_url + "watchlists"
         self.users_url = self.base_url + "users"
         self.packages_url = self.base_url + "packages"
         self.user_friendly_name = self.get_token()["token"]["user_friendly_name"]
