@@ -28,8 +28,6 @@ def main():
     else:
         print("ERROR: No token provided")
         exit(1)
-        # session = rcsession.RCSession(rcsession.RCSession.get_token_from_file(self, 'token.json'))
-        # session = rcsession.RCSession(rcsession.get_token_from_file(token_file))
 
     if not session:
         exit(1)
@@ -38,11 +36,6 @@ def main():
         pass
 
     if args.token:
-        # print(session.user_friendly_name)
-        # print(session.renew_token())
-        # print(session.get_token())
-        # print(session.user_friendly_name)
-        # print(session.is_token_valid())
         pass
 
     # dump some pages
