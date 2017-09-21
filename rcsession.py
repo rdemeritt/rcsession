@@ -7,6 +7,7 @@ built on top of:
 """
 import requests
 import json
+import os
 from datetime import datetime
 
 __version__ = '0.2.3'
@@ -25,6 +26,9 @@ class RCSession:
         # check to see if we should use an API key instead
         # of Red Cloak token
         if _key:
+            if os.path.isfile(_key):
+                _key = self.get_key_from_file(_key)
+
             self.headers = {
                 'authorization': 'APIKEY %s' % _key,
                 'content-type': 'application/%s' % _content_type,
@@ -35,6 +39,9 @@ class RCSession:
 
         # use the Red Cloak token
         elif _token:
+            if os.path.isfile(_token):
+                _token = self.get_token_from_file(_token)
+
             self.headers = {
                 'authorization': 'TOKEN %s' % _token,
                 'content-type': 'application/%s' % _content_type,
