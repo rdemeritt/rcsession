@@ -46,6 +46,7 @@ def main():
     # dump some pages
     print("TOKEN:\n" + str(session.get_token()))
     print("\nFRIENDLY NAME:\n" + str(session.user_friendly_name))
+<<<<<<< HEAD
     print("\nCLIENT DOMAINS:\n" + str(
         dump_url_response(session, session.client_domains_url + count)))
     print("\nWATCHLISTS:\n" + str(
