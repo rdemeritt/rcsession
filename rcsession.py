@@ -10,7 +10,7 @@ import json
 import os
 from datetime import datetime
 
-__version__ = '0.2.3'
+__version__ = '0.2.4'
 
 
 class RCSession:
