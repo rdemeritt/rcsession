@@ -28,11 +28,9 @@ def main():
     elif args.key:
 
         if os.path.isfile(args.key):
-
             session = rcsession.RCSession(_key=rcsession.RCSession.get_key_from_file(args.key))
 
         else:
-
             session = rcsession.RCSession(_key=args.key)
 
     else:
