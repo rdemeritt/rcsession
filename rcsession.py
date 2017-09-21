@@ -14,7 +14,7 @@ __version__ = '0.2.2'
 
 class RCSession:
 
-    def __init__(self, _token=False, _key=False, _base_url=None, _auto_renew=False,
+    def __init__(self, _token=False, _key=False, _base_url=None,
                  _content_type="json", _accept="json"):
         # check to see if we should use an API key instead
         # of Red Cloak token
@@ -44,7 +44,6 @@ class RCSession:
                 self.base_url = "https://redcloak.secureworks.com/"
             else:
                 self.base_url = _base_url
-            self.auto_renew = _auto_renew
 
         self.token_url = self.base_url + "token"
         self.hosts_url = self.base_url + "hosts"
@@ -55,6 +54,7 @@ class RCSession:
         self.watchlists_url = self.base_url + "watchlists"
         self.users_url = self.base_url + "users"
         self.packages_url = self.base_url + "packages"
+        self.index_url = self.base_url + 'index'
 
         # setup our python requests session
         try:
@@ -112,7 +112,8 @@ class RCSession:
     #     "token": "3JkZW1lcml0dEBnbWFpbC5jb20QkJHtx/...."
     #  }
     #
-    def get_token_from_file(self, _file_name):
+    @staticmethod
+    def get_token_from_file(_file_name):
         with open(_file_name) as token_json:
             return json.load(token_json)['token']
 
@@ -124,6 +125,18 @@ class RCSession:
                 self.datetimefstr(self.get_token()['token']['expires']) > datetime.utcnow():
             return self.datetimefstr(self.get_token()['token']['expires'])
         return False
+
+    # api-gw key functionality
+    # fetch our api-gw key from a json document
+    #
+    # example below:
+    # {
+    #     "key": "rdemeritt@gmail.com:s0m3P@$$w0rd"
+    #  }
+    @staticmethod
+    def get_key_from_file(_file_name):
+        with open(_file_name) as token_json:
+            return json.load(token_json)['key']
 
     # return a datetime object from a string
     @classmethod
