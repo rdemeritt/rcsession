@@ -1,5 +1,6 @@
 import argparse
 import rcsession
+import os
 from urllib.parse import quote_plus
 import json
 
@@ -25,7 +26,14 @@ def main():
         session = rcsession.RCSession(_token=args.token)
 
     elif args.key:
-        session = rcsession.RCSession(_key=args.key)
+
+        if os.path.isfile(args.key):
+
+            session = rcsession.RCSession(_key=rcsession.RCSession.get_key_from_file(args.key))
+
+        else:
+
+            session = rcsession.RCSession(_key=args.key)
 
     else:
         print("ERROR: No token provided")
