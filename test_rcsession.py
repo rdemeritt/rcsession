@@ -46,6 +46,8 @@ def main():
     # dump some pages
     print("TOKEN:\n" + str(session.get_token()))
     print("\nFRIENDLY NAME:\n" + str(session.user_friendly_name))
+    print("\nAETD DOMAIN:\n" + str(
+        dump_url_response(session, session.index_url + '?domain=d32c7944')))
     print("\nCLIENT DOMAINS:\n" + str(
         dump_url_response(session, session.client_domains_url + count)))
     print("\nWATCHLISTS:\n" + str(

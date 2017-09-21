@@ -55,6 +55,7 @@ class RCSession:
         self.watchlists_url = self.base_url + "watchlists"
         self.users_url = self.base_url + "users"
         self.packages_url = self.base_url + "packages"
+        self.index_url = self.base_url + 'index'
 
         # setup our python requests session
         try:
