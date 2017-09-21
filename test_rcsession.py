@@ -1,5 +1,6 @@
 import argparse
 import rcsession
+from urllib.parse import quote_plus
 import json
 
 
@@ -13,6 +14,7 @@ def build_arg_parser():
 
 
 def dump_url_response(_session, _url):
+        print(_url)
         return _session.session.get(_url).text
 
 
@@ -38,12 +40,18 @@ def main():
     if args.token:
         pass
 
+    # limit results
+    count = '?count=%s' % '5'
+
     # dump some pages
     print("TOKEN:\n" + str(session.get_token()))
     print("\nFRIENDLY NAME:\n" + str(session.user_friendly_name))
-    print("\nCLIENT DOMAINS:\n" + str(dump_url_response(session, session.client_domains_url)))
-    print("\nWATCHLISTS:\n" + str(dump_url_response(session, session.watchlists_url)))
-    print("\nHOSTS:\n" + str(dump_url_response(session, session.hosts_url)))
+    print("\nCLIENT DOMAINS:\n" + str(
+        dump_url_response(session, session.client_domains_url + count)))
+    print("\nWATCHLISTS:\n" + str(
+        dump_url_response(session, session.watchlists_url + count)))
+    print("\nHOSTS:\n" + str(
+        dump_url_response(session, session.hosts_url + count)))
 
     # print the RCSession info
     print("\nRCSESSION INFO:\n" + str(session.__dict__))
