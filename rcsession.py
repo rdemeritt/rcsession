@@ -14,7 +14,7 @@ __version__ = '0.2.2'
 
 class RCSession:
 
-    def __init__(self, _token=False, _key=False, _auto_renew=False,
+    def __init__(self, _token=False, _key=False, _base_url=None, _auto_renew=False,
                  _content_type="json", _accept="json"):
         # check to see if we should use an API key instead
         # of Red Cloak token
@@ -24,7 +24,12 @@ class RCSession:
                 'content-type': 'application/%s' % _content_type,
                 'accept': 'application/%s' % _accept
             }
-            self.base_url = "https://api.secureworks.com/api/redcloak/"
+
+            # set self.base_url
+            if _base_url is None:
+                self.base_url = "https://api.secureworks.com/api/redcloak/"
+            else:
+                self.base_url = _base_url
 
         # use the Red Cloak token
         elif _token:
@@ -33,16 +38,13 @@ class RCSession:
                 'content-type': 'application/%s' % _content_type,
                 'accept': 'application/%s' % _accept
             }
-            self.base_url = "https://redcloak.secureworks.com/"
+
+            # set self.base_url
+            if _base_url is None:
+                self.base_url = "https://redcloak.secureworks.com/"
+            else:
+                self.base_url = _base_url
             self.auto_renew = _auto_renew
-
-        try:
-            self.session = requests.Session()
-            self.session.headers.update(self.headers)
-
-        except Exception as e:
-            print("ERROR: Unable to build requests session: %s" % e)
-            exit(1)
 
         self.token_url = self.base_url + "token"
         self.hosts_url = self.base_url + "hosts"
@@ -53,7 +55,30 @@ class RCSession:
         self.watchlists_url = self.base_url + "watchlists"
         self.users_url = self.base_url + "users"
         self.packages_url = self.base_url + "packages"
-        self.user_friendly_name = self.get_token()["token"]["user_friendly_name"]
+
+        # setup our python requests session
+        try:
+            self.session = requests.Session()
+            self.session.headers.update(self.headers)
+
+        except Exception as e:
+            print("ERROR: Unable to build requests session: %s" % str(e))
+            exit(1)
+
+        # make sure that we have a valid RC session and if so, set user_friendly_name
+        try:
+            token = self.get_token()
+            if not token:
+                print("ERRR: Unable to build a Red Cloak Session to %s" % self.base_url)
+                exit(2)
+
+            else:
+                self.user_friendly_name = token["token"]["user_friendly_name"]
+
+        except Exception as e:
+            print("ERRR: Unable to build a Red Cloak Session to %s: %s" % (self.base_url, str(e)))
+            exit(3)
+        # self.user_friendly_name = self.get_token()["token"]["user_friendly_name"]
 
     def close_requests(self):
         try:
