@@ -1,5 +1,6 @@
 import argparse
 import rcsession
+import os
 from urllib.parse import quote_plus
 import json
 

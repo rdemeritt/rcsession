@@ -7,43 +7,48 @@ built on top of:
 """
 import requests
 import json
+import os
 from datetime import datetime
 
-__version__ = '0.2.2'
+__version__ = '0.2.4'
 
 
 class RCSession:
 
     def __init__(self, _token=False, _key=False, _base_url=None,
                  _content_type="json", _accept="json"):
+
+        def set_base_url(__url):
+            if _base_url is None:
+                return __url
+            return _base_url
+
         # check to see if we should use an API key instead
         # of Red Cloak token
         if _key:
+            if os.path.isfile(_key):
+                _key = self.get_key_from_file(_key)
+
             self.headers = {
                 'authorization': 'APIKEY %s' % _key,
                 'content-type': 'application/%s' % _content_type,
                 'accept': 'application/%s' % _accept
             }
-
             # set self.base_url
-            if _base_url is None:
-                self.base_url = "https://api.secureworks.com/api/redcloak/"
-            else:
-                self.base_url = _base_url
+            self.base_url = set_base_url('https://api.secureworks.com/api/redcloak/')
 
         # use the Red Cloak token
         elif _token:
+            if os.path.isfile(_token):
+                _token = self.get_token_from_file(_token)
+
             self.headers = {
                 'authorization': 'TOKEN %s' % _token,
                 'content-type': 'application/%s' % _content_type,
                 'accept': 'application/%s' % _accept
             }
-
             # set self.base_url
-            if _base_url is None:
-                self.base_url = "https://redcloak.secureworks.com/"
-            else:
-                self.base_url = _base_url
+            self.base_url = set_base_url('https://redcloak.secureworks.com/')
 
         self.token_url = self.base_url + "token"
         self.hosts_url = self.base_url + "hosts"
