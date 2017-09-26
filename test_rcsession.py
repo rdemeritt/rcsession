@@ -23,48 +23,42 @@ def main():
     # figure out how we should get our token
     # and configure our https session
     if args.token:
-        session = rcsession.RCSession(_token=args.token)
+        redcloak_session = rcsession.RCSession(_token=args.token)
 
     elif args.key:
-        session = rcsession.RCSession(_key=args.key)
+        redcloak_session = rcsession.RCSession(_key=args.key)
 
     else:
         print("ERROR: No token provided")
         exit(1)
 
-    if not session:
+    if not redcloak_session:
         exit(1)
 
-    if args.key:
-        pass
-
-    if args.token:
-        pass
-
     # limit results
-    count = '?count=%s' % '5'
+    count = '?count=%s'
 
     # dump some pages
-    print("TOKEN:\n" + str(session.get_token()))
-    print("\nFRIENDLY NAME:\n" + str(session.user_friendly_name))
+    print("TOKEN:\n" + str(redcloak_session.get_token()))
+    print("\nFRIENDLY NAME:\n" + str(redcloak_session.user_friendly_name))
     print("\nAETD DOMAIN:\n" + str(
-        dump_url_response(session, session.index_url + '?domain=d32c7944')))
+        dump_url_response(redcloak_session, redcloak_session.index_url + '?domain=d32c7944')))
     print("\nCLIENT DOMAINS:\n" + str(
-        dump_url_response(session, session.client_domains_url + count)))
+        dump_url_response(redcloak_session, redcloak_session.client_domains_url + count % '1')))
     print("\nWATCHLISTS:\n" + str(
-        dump_url_response(session, session.watchlists_url + count)))
+        dump_url_response(redcloak_session, redcloak_session.watchlists_url + count % '1')))
     print("\nHOSTS:\n" + str(
-        dump_url_response(session, session.hosts_url + count)))
+        dump_url_response(redcloak_session, redcloak_session.hosts_url + count % '1')))
 
     # print the RCSession info
-    print("\nRCSESSION INFO:\n" + str(session.__dict__))
+    print("\nRCSESSION INFO:\n" + str(redcloak_session.__dict__))
 
     # print out the requests session info
-    print("\nREQUESTS INFO:\n" + str(session.__dict__['session'].__dict__))
+    print("\nREQUESTS INFO:\n" + str(redcloak_session.__dict__['session'].__dict__))
 
     # close_requests our https session
-    print("Closing %s: " % session.__dict__['session'])
-    session.close_requests()
+    print("Closing %s: " % redcloak_session.__dict__['session'])
+    redcloak_session.close_requests()
     print("Closed")
 
     exit(0)
