@@ -60,6 +60,19 @@ class RCSession:
         self.users_url = self.base_url + "users"
         self.packages_url = self.base_url + "packages"
         self.index_url = self.base_url + 'index'
+        self.jobs_url = self.base_url + 'jobs'
+        self.datafilters_url = self.base_url + 'datafilters'
+        self.known_hashes_url = self.base_url + 'known_hashes'
+        self.investigations_url = self.base_url + 'investigations'
+        self.suppression_rules_url = self.base_url + 'suppression_rules'
+        self.process_disruptions_url = self.base_url + 'process_disruptions'
+        self.processes_url = self.base_url + 'processes'
+        self.ruleresuls_url = self.base_url+ 'ruleresults'
+        self.persistence_events_url = self.base_url + 'persistence_events_all'
+        self.netflows_url = self.base_url + 'netflows'
+        self.dns_lookups_url = self.base_url + 'dns_lookups'
+        self.thread_injections_url = self.base_url + 'thread_injections'
+        self.windows_events_url = self.base_url + 'windows_events'
 
         # setup our python requests session
         try:
