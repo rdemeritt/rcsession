@@ -41,14 +41,14 @@ def main():
     # dump some pages
     print("TOKEN:\n" + str(redcloak_session.get_token()))
     print("\nFRIENDLY NAME:\n" + str(redcloak_session.user_friendly_name))
-    print("\nAETD DOMAIN:\n" + str(
-        dump_url_response(redcloak_session, redcloak_session.index_url + '?domain=d32c7944')))
-    print("\nCLIENT DOMAINS:\n" + str(
-        dump_url_response(redcloak_session, redcloak_session.client_domains_url + count % '1')))
-    print("\nWATCHLISTS:\n" + str(
-        dump_url_response(redcloak_session, redcloak_session.watchlists_url + count % '1')))
-    print("\nHOSTS:\n" + str(
-        dump_url_response(redcloak_session, redcloak_session.hosts_url + count % '1')))
+    print("\nAETD DOMAIN:\n" +
+          redcloak_session.session.get(redcloak_session.index_url, params={'domain': 'd32c7944'}).text)
+    print("\nCLIENT DOMAINS:\n" +
+          redcloak_session.session.get(redcloak_session.client_domains_url, params={'count': '1'}).text)
+    print("\nWATCHLISTS:\n" +
+          redcloak_session.session.get(redcloak_session.watchlists_url, params={'count': '1'}).text)
+    print("\nHOSTS:\n" +
+          redcloak_session.session.get(redcloak_session.hosts_url, params={'count': '1'}).text)
 
     # print the RCSession info
     print("\nRCSESSION INFO:\n" + str(redcloak_session.__dict__))
