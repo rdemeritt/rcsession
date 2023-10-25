@@ -1,0 +1,18 @@
+{
+    "_communication_started": false,
+    "returncode": 1,
+    "args": [
+        "ping",
+        "redcloaktest"
+    ],
+    "_waitpid_lock": "<unlocked _thread.lock object at 0x000001B0DD9BAC10>",
+    "stderr": {},
+    "stdout": {},
+    "universal_newlines": false,
+    "_input": null,
+    "pid": 2472,
+    "_child_created": true,
+    "_closed_child_pipe_fds": false,
+    "stdin": null,
+    "_handle": 708
+}

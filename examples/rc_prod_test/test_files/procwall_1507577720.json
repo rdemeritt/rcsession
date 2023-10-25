@@ -1,0 +1,9 @@
+{
+    "_child_created": true, 
+    "returncode": 2, 
+    "stdout": "<open file '<fdopen>', mode 'rb' at 0x2312930>", 
+    "stdin": null, 
+    "pid": 5033, 
+    "stderr": "<open file '<fdopen>', mode 'rb' at 0x23129c0>", 
+    "universal_newlines": false
+}

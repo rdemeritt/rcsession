@@ -1,0 +1,38 @@
+{
+  "configuration": {
+    "domain_id": "d32c7944",
+    "version": "2.0.7.7",
+    "bundled_module": [
+      "procwall",
+      "inspector",
+      "cyclorama",
+      "groundling",
+      "lacuna",
+      "authtap",
+      "fcm",
+      "hostel",
+      "entwine"
+    ],
+    "enabled_module": [
+      "procwall",
+      "inspector",
+      "cyclorama",
+      "groundling",
+      "lacuna",
+      "authtap",
+      "fcm",
+      "hostel",
+      "entwine"
+    ],
+    "disabled_module": [
+      "lacuna"
+    ],
+    "name": "2.0.7.7 - All Modules (including FCM) MITRE eval",
+    "authority_server": [
+      "cluster.b.redcloak.secureworks.com:443",
+      "cluster.b.redcloak.secureworks.com:17234"
+    ],
+    "discover_proxy": true,
+    "static_proxy": []
+  }
+}
